@@ -1,0 +1,114 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="shunfeng.list">
+      <field name="name">shunfeng list</field>
+      <field name="model">shunfeng.shunfeng</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+
+    <record model="ir.ui.view" id="shunfeng.list">
+      <field name="name">shunfeng list</field>
+      <field name="model">shunfeng.shunfeng</field>
+      <field name="arch" type="xml" >
+        <tree edit="false" create="false">
+          <field name="stock_pick_id"/>
+          <field name="shunfeng_num"/>
+          <field name="filterResult"/>
+			<field name="remark"/>
+			<field name="status"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="shunfeng.action_window">
+      <field name="name">顺丰订单</field>
+      <field name="res_model">shunfeng.shunfeng</field>
+      <field name="view_mode">tree</field>
+    </record>
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="shunfeng.action_window">
+      <field name="name">shunfeng window</field>
+      <field name="res_model">shunfeng.shunfeng</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="shunfeng.action_server">
+      <field name="name">shunfeng server</field>
+      <field name="model_id" ref="model_shunfeng_shunfeng"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+ <menuitem name="顺丰订单" id="shunfeng.menu_root" action="shunfeng.action_window"/>
+    <!-- Top menu item -->
+<!--
+    <menuitem name="shunfeng" id="shunfeng.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="shunfeng.menu_1" parent="shunfeng.menu_root"/>
+    <menuitem name="Menu 2" id="shunfeng.menu_2" parent="shunfeng.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="shunfeng.menu_1_list" parent="shunfeng.menu_1"
+              action="shunfeng.action_window"/>
+    <menuitem name="Server to list" id="shunfeng" parent="shunfeng.menu_2"
+              action="shunfeng.action_server"/>
+-->
+ <record id="stock_picking_mail_form" model="ir.ui.view">
+			<field name="name">stock.picking.mail.form</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.view_picking_form"/>
+			<field name="arch" type="xml">
+   				<xpath expr="//group/field[@name='backorder_id']" position="before">
+                    <field name="mail_partner_id"/>
+					<field name="sf_num"/>
+				</xpath>
+
+   			</field>
+		</record>
+
+
+    <record id="stock_picking_financial_approval_form_inherit_sf" model="ir.ui.view">
+			<field name="name">stock.picking.financial.approval.form</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.view_picking_form"/>
+			<field name="arch" type="xml">
+   				<xpath expr="//button[@name='action_cancel']" position="after">
+					<button name="get_shunfeng_cancel" string='顺丰已发货' type="object" class="oe_stat_button"
+							attrs="{'invisible': ['|',('is_sf_delivery', '=', False),('state','in',('done','cancel','draft'))]}"
+							groups="account.group_account_manager"/>
+					<button  name="get_shunfeng" string='顺丰发货' type="object"
+						attrs="{'invisible': ['|',('is_sf_delivery', '=', True),('state','in',('done','cancel','draft'))]}"
+							 class="oe_stat_button" />
+					<field name="is_sf_delivery" invisible="1"/>
+				</xpath>
+   			</field>
+		</record>
+  </data>
+</odoo>
